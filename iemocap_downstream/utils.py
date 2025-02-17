@@ -1,4 +1,7 @@
 import torch
+##
+# from model import BaseModel
+# from torch import nn, optim
 
 def train_one_epoch(model, optimizer, criterion, train_loader, device):
     model.train()
@@ -77,7 +80,10 @@ def inference(model, ):
 def compute_unweighted_accuracy(list1, list2):
     result = []
     for i in range(len(list1)):
-        result.append(list1[i] / list2[i])
+        if list2[i] > 0:
+            result.append(list1[i] / list2[i])
+        else:
+            result.append(0)
     return sum(result)/len(result)
 
 def compute_weighted_f1(tp, fp, fn, unweightet_total):
@@ -100,3 +106,4 @@ def compute_weighted_f1(tp, fp, fn, unweightet_total):
             
     wf1 = sum([f1_scores[i] * unweightet_total[i] for i in range(num_classes)]) / sum(unweightet_total)
     return wf1
+

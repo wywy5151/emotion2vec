@@ -17,7 +17,10 @@ from typing import Optional, Callable
 from fairseq.data.data_utils import compute_mask_indices
 from fairseq.modules import GradMultiply
 from fairseq.utils import index_put
-from .modules import Modality, D2vDecoderConfig
+import sys
+sys.path.append(r'C:\Users\ROG\Desktop\project\emotion2vec\upstream\models')
+from modules import Modality
+from modules import D2vDecoderConfig
 
 logger = logging.getLogger(__name__)
 

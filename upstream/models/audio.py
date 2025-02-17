@@ -16,8 +16,10 @@ from fairseq.modules import (
     TransposeLast,
 )
 from fairseq.tasks import FairseqTask
-from .base import D2vModalityConfig, ModalitySpecificEncoder, get_alibi_bias
-from .modules import Modality, BlockEncoder, Decoder1d
+import sys
+sys.path.append(r'C:\Users\ROG\Desktop\project\emotion2vec\upstream\models')
+from base import D2vModalityConfig, ModalitySpecificEncoder, get_alibi_bias
+from modules import Modality, BlockEncoder, Decoder1d
 
 @dataclass
 class D2vAudioConfig(D2vModalityConfig):

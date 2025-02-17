@@ -11,7 +11,7 @@ from torch import nn, optim
 from data import load_ssl_features, train_valid_test_iemocap_dataloader
 from model import BaseModel
 from utils import train_one_epoch, validate_and_test
-
+from tqdm import tqdm
 import logging
 
 logger = logging.getLogger('IEMOCAP_Downstream')
@@ -28,19 +28,22 @@ def count_parameters(model):
 def train_iemocap(cfg: DictConfig):
     torch.manual_seed(cfg.common.seed)
 
-    label_dict={'ang': 0, 'hap': 1, 'neu': 2, 'sad': 3}
-    n_samples = [1085, 1023, 1151, 1031, 1241] # Session1, 2, 3, 4, 5
-    idx_sessions = [0, 1, 2, 3, 4]
+    label_dict={'suprise': 0, 'angry': 1, 'neutral': 2, 'sad': 3, 'happy': 4, 'fear': 5, 'disgust': 7, 'calm': 8}
+    n_samples = [452, 763, 587, 698, 647, 705, 81, 298, 376] # Session1, 2, 3, 4, 5
+    #idx_sessions = ['surprise', 'angry', 'neutral', 'sad', 'happy', 'fear', 'boredom', 'disgust', 'calm']
+    idx_sessions=[0,1,2,3,4,5,7,8]
 
     test_wa_avg, test_ua_avg, test_f1_avg = 0., 0., 0.
     
-    for fold in idx_sessions: # extract the $fold$th as test set
+    for fold in tqdm(idx_sessions, desc="Training"): # extract the $fold$th as test set
         logger.info(f"------Now it's {fold+1}th fold------")
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(device)
         torch.cuda.empty_cache()
         
         dataset = load_ssl_features(cfg.dataset.feat_path, label_dict)
+        print(dataset)
 
         test_len = n_samples[fold] 
         test_idx_start = sum(n_samples[:fold])
@@ -59,15 +62,17 @@ def train_iemocap(cfg: DictConfig):
         # count_parameters(model)
         optimizer = optim.RMSprop(model.parameters(), lr=cfg.optimization.lr, momentum=0.9)
         scheduler = optim.lr_scheduler.CyclicLR(optimizer, base_lr=cfg.optimization.lr, max_lr=1e-3, step_size_up=10)
-        criterion = nn.CrossEntropyLoss()
+        criterion = nn.CrossEntropyLoss().to(device)
 
         best_val_wa = 0
         best_val_wa_epoch = 0
         # Training loop
         
         save_dir = os.path.join(str(Path.cwd()), f"model_{fold+1}.pth")
-        for epoch in range(cfg.optimization.epoch):  # Adjust the number of epochs as per your requirement
+        for epoch in tqdm(range(cfg.optimization.epoch),desc="Training"):  # Adjust the number of epochs as per your requirement
             train_loss = train_one_epoch(model, optimizer, criterion, train_loader, device)
+            print("train_loss")
+            print(train_loss)
             scheduler.step()
             # Validation step
             val_wa, val_ua, val_f1 = validate_and_test(model, val_loader, device, num_classes=len(label_dict))
@@ -84,7 +89,7 @@ def train_iemocap(cfg: DictConfig):
         model.load_state_dict(ckpt, strict=True)
         test_wa, test_ua, test_f1 = validate_and_test(model, test_loader, device, num_classes=len(label_dict))
         logger.info(f"The {fold+1}th Fold at epoch {best_val_wa_epoch + 1}, test WA {test_wa}%; UA {test_ua}%; F1 {test_f1}%")
-        
+
         test_wa_avg += test_wa
         test_ua_avg += test_ua
         test_f1_avg += test_f1

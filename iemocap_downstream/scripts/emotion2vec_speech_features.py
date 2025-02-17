@@ -17,6 +17,8 @@ from npy_append_array import NpyAppendArray
 
 import fairseq
 import soundfile as sf
+import numpy as np
+import librosa
 
 
 def get_parser():
@@ -57,8 +59,13 @@ class Emotion2vecFeatureReader(object):
         """Load an audio file and return PCM along with the sample rate"""
         wav, sr = sf.read(fname)
         channel = sf.info(fname).channels
-        assert sr == 16e3, "Sample rate should be 16kHz, but got {}in file {}".format(sr, fname)
-        assert channel == 1, "Channel should be 1, but got {} in file {}".format(channel, fname)
+        # assert sr == 16e3, "Sample rate should be 16kHz, but got {}in file {}".format(sr, fname)
+        # assert channel == 1, "Channel should be 1, but got {} in file {}".format(channel, fname)
+        if channel > 1:
+            wav = np.mean(wav, axis=1)
+        if sr != 16e3:
+            wav = librosa.resample(wav, orig_sr=sr, target_sr=16e3)
+            sr = 16e3  # 更新采样率
 
         return wav
 

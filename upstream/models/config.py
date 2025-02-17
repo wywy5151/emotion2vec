@@ -2,8 +2,10 @@ from dataclasses import dataclass, field
 from typing import Optional
 from omegaconf import II
 from fairseq.dataclass import FairseqDataclass
-from .audio import D2vAudioConfig
-from .modules import Modality
+import sys
+sys.path.append(r'C:\Users\ROG\Desktop\project\emotion2vec\upstream\models')
+from audio import D2vAudioConfig
+from modules import Modality
 
 @dataclass
 class D2vModalitiesConfig(FairseqDataclass):

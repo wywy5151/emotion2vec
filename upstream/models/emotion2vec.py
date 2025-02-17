@@ -12,10 +12,11 @@ import torch.nn as nn
 
 from fairseq.models import BaseFairseqModel, register_model
 from fairseq.modules.transformer_sentence_encoder import init_bert_params
-
-from .config import Data2VecMultiConfig
-from .modules import AltBlock
-from .audio import D2vAudioConfig, AudioEncoder
+import sys
+sys.path.append(r'C:\Users\ROG\Desktop\project\emotion2vec\upstream\models')
+from config import Data2VecMultiConfig
+from modules import AltBlock
+from audio import D2vAudioConfig, AudioEncoder
 
 logger = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@ common:
 
 dataset:
   _name: IEMOCAP
-  feat_path: /path/to/feat_path
+  feat_path: C:\Users\ROG\Desktop\project\emotion2vec\iemocap_downstream\scripts\features
   test_ratio: 0.2
   batch_size: 128
   fold: 5

@@ -27,6 +27,7 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
     print(args)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     source_file = args.source_file
     target_file = args.target_file
@@ -67,4 +68,13 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+
+    # 将参数列表添加到sys.argv
+    sys.argv += [
+        '--source_file=C:/Users/ROG/Desktop/project/emotion2vec/scripts/test.wav',
+        '--target_file=C:/Users/ROG/Desktop/project/emotion2vec/scripts/test.npy',
+        '--model_dir=C:/Users/ROG/Desktop/project/emotion2vec/upstream',
+        '--checkpoint_dir=C:/Users/ROG/Desktop/project/emotion2vec/emotion2vec_base/emotion2vec_base.pt',
+        '--granularity=utterance'
+    ]

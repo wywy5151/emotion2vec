@@ -19,3 +19,18 @@ class BaseModel(nn.Module):
         
         x = self.post_net(x)
         return x
+
+# if __name__ == '__main__':
+#     label_dict = {'ang': 0, 'hap': 1, 'neu': 2, 'sad': 3}
+#     idx2label = {v: k for k, v in label_dict.items()}
+#     model = BaseModel(input_dim=768, output_dim=len(label_dict))
+#
+#     ckpt = torch.load('C:/Users/ROG/Desktop/project/emotion2vec/emotion2vec_base/emotion2vec_base.pt')
+#     model.load_state_dict(ckpt)
+    #
+    # feat = torch.randn(1, 100, 768)
+    # padding_mask = torch.zeros(1, 100).bool()
+    # outputs = model(feat, padding_mask)
+    #
+    # _, predict = torch.max(outputs.data, dim=1)
+    # print(idx2label[predict.item()])

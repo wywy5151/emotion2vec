@@ -17,14 +17,14 @@ def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--root", metavar="DIR", 
-        default='/path/to/IEMOCAP_full_release',
+        default=r'C:\Users\ROG\Desktop\project\emotion2vec\iemocap_downstream\scripts\data',
         help="root directory containing audio files to index"
     )
     parser.add_argument(
-        "--dest", default="/path/to/manifest", type=str, metavar="DIR", help="output directory"
+        "--dest", default="C:/Users/ROG/Desktop/project/emotion2vec/iemocap_downstream/scripts/data", type=str, metavar="DIR", help="output directory"
     )
     parser.add_argument(
-        "--label_path", default="/path/to/train.emo",
+        "--label_path", default="C:/Users/ROG/Desktop/project/emotion2vec/iemocap_downstream/scripts/features_1/train_1.emo",
     )
     return parser
 
@@ -34,6 +34,7 @@ def main(args):
         os.makedirs(args.dest)
     
     root = os.path.join(args.root, 'Session{}')
+    print(args.label_path)
     with open(args.label_path) as rf, open(args.dest + '/train.tsv', 'w') as wf:
         print(args.root, file=wf)
         for line in rf.readlines():
